@@ -27,6 +27,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hprevInstance, _
 
 	while (true)
 	{
+		updateKeys(keys);
 		switch (gameState)
 		{
 		case GAME_TITLE:
@@ -62,7 +63,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hprevInstance, _
 void titleScreen(int& screenDelay, GAME_STATE& gameState, int& timer)
 {
 	ClearDrawScreen();
-	updateKeys(keys);
 
 	std::string titleText = "ASTEROIDS";
 	DxLibAddon::DrawString(WINDOW_CENTER - VECTOR2i(0, 40), titleText, WHITE, 90, true);

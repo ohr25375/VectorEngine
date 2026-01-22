@@ -70,6 +70,18 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PublicIncludeDirectories>$(ProjectDir)src;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PublicIncludeDirectories>$(ProjectDir)src;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PublicIncludeDirectories>$(ProjectDir)src;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PublicIncludeDirectories>$(ProjectDir)src;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -143,25 +155,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="color.cpp" />
-    <ClCompile Include="DxLibAddon.cpp" />
-    <ClCompile Include="DxLibAddon.hpp" />
-    <ClCompile Include="keyboard.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="objects.cpp" />
+    <ClCompile Include="src\color.cpp" />
+    <ClCompile Include="src\DxLibAddon.cpp" />
+    <ClCompile Include="src\keyboard.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\objects.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="color.hpp" />
-    <ClInclude Include="entities.hpp" />
-    <ClInclude Include="enum.hpp" />
-    <ClInclude Include="keyboard.hpp" />
-    <ClInclude Include="main.hpp" />
-    <ClInclude Include="objects.hpp" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="vector2.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="VectorEngine.rc" />
+    <ResourceCompile Include="src\VectorEngine.rc" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="sounds\Boost.wav" />
@@ -173,6 +174,17 @@
     <Media Include="sounds\NewLife.wav" />
     <Media Include="sounds\Shoot.wav" />
     <Media Include="sounds\Thrust.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\color.hpp" />
+    <ClInclude Include="src\DxLibAddon.hpp" />
+    <ClInclude Include="src\entities.hpp" />
+    <ClInclude Include="src\enum.hpp" />
+    <ClInclude Include="src\keyboard.hpp" />
+    <ClInclude Include="src\main.hpp" />
+    <ClInclude Include="src\objects.hpp" />
+    <ClInclude Include="src\resource.h" />
+    <ClInclude Include="src\vector2.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
