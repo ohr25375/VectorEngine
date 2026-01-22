@@ -104,6 +104,8 @@ void loadScreen(int& screenDelay, GAME_STATE& gameState)
 		lives = INITIAL_LIVES;
 		score = 0;
 		level = 0;
+		entities.clear();
+		spawnAsteroids();
 		return;
 	}
 	ScreenFlip();
@@ -137,6 +139,8 @@ void clearScreen(int& screenDelay, GAME_STATE& gameState)
 	if (screenDelay <= 0)
 	{
 		gameState = GAME_GAME;
+		entities.clear();
+		spawnAsteroids();
 		return;
 	}
 	ScreenFlip();
@@ -166,12 +170,10 @@ bool game()
 	player.rotation = 0;
 	exhaust.pos = player.pos;
 
-	entities.clear();
-
 	resetParticles(pointParticles);
 	resetParticles(deathParticles);
 
-	spawnAsteroids();
+	resetAsteroidPositions();
 
 	int time = 0;
 	bool isBulletVisible = false;
@@ -327,19 +329,36 @@ void drawScore()
 	}
 }
 
+
 void spawnAsteroids()
 {
 	int asteroidSpawnBudget = ASTEROID_INITIAL_SPAWN_BUDGET + pow(1.5, level);
-	while (asteroidSpawnBudget > 0)
+	for (int i = 0; i < asteroidSpawnBudget; i++)
 	{
 		ASTEROID ast(largeAsteroid, fmod(mt() / 1000.0, 2));
 		ast.size = mt() % ASTEROID_SIZE.size();
-		asteroidSpawnBudget -= ASTEROID_SPAWN_COSTS[ast.size];
-		ast.obj.vel = VECTOR2f(0, 1).rotate(mt() * DEG2RAD) * ASTEROID_SPEED[ast.size];
-		ast.obj.graphSize = ASTEROID_SIZE[ast.size];
-		ast.obj.pos = (VECTOR2f(0, 1) * WINDOW_CENTER.x).rotate(mt() * DEG2RAD) + WINDOW_CENTER;
-		entities.push_back(ast);
+		for (int j = 0; j < ASTEROID_SPAWN_COUNT[ast.size]; j++)
+		{
+			resetAsteroidPosition(ast);
+			entities.push_back(ast);
+		}
 	}
+}
+
+void resetAsteroidPositions()
+{
+	for (auto& ast : entities)
+	{
+		resetAsteroidPosition(ast);
+	}
+}
+
+void resetAsteroidPosition(ASTEROID& ast)
+{
+	ast.obj.vel = VECTOR2f(0, 1).rotate(mt() * DEG2RAD) * ASTEROID_SPEED[ast.size];
+	ast.obj.graphSize = ASTEROID_SIZE[ast.size];
+	ast.obj.pos = (VECTOR2f(0, 1) * WINDOW_CENTER.x).rotate(mt() * DEG2RAD) + WINDOW_CENTER;
+	ast.obj.rotation = (mt() * DEG2RAD);
 }
 
 int registerSoundMem(const TCHAR* path, std::vector<int> list)

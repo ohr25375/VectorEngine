@@ -54,7 +54,7 @@ const int STARTING_ASTEROID_COUNT = 5;
 const std::vector<int> ASTEROID_SIZE = {5,10,20,30,40,50,60,};
 const std::vector<float> ASTEROID_SPEED = {1.5,1,0.7,0.6,0.5,0.4,0.3,};
 const std::vector<int> ASTEROID_SCORES = {5,10,25,50,100,250,500};
-const std::vector<int> ASTEROID_SPAWN_COSTS = { 1, 1, 2, 2, 3, 4, 5,};
+const std::vector<int> ASTEROID_SPAWN_COUNT = { 6, 4, 3, 2, 1, 1, 1,};
 
 const float PARTICLE_INITIAL_SPEED = 2;
 const float PARTICLE_TIME = 1;
@@ -106,6 +106,8 @@ bool drawBullet();
 void drawLives();
 void drawScore();
 void spawnAsteroids();
+void resetAsteroidPositions();
+void resetAsteroidPosition(ASTEROID& ast);
 void Initialize();
 void drawParticles(std::vector<POINT_PARTICLE>& particles, OBJECT particle, bool canShrink = true);
 void controlPlayer(bool& isBulletVisible, int time);
