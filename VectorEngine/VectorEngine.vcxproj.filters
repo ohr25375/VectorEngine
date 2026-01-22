@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\lib">
+      <UniqueIdentifier>{817e06e3-eae7-44d5-b3d8-bf1965c1e41e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\lib">
+      <UniqueIdentifier>{d6f4f099-df82-48b0-9038-90cffa8c9580}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="DxLibAddon.hpp">
+      <Filter>ヘッダー ファイル\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="DxLibAddon.cpp">
+      <Filter>ソース ファイル\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="color.cpp">
+      <Filter>ソース ファイル\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="keyboard.cpp">
+      <Filter>ソース ファイル\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="objects.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vector2.hpp">
+      <Filter>ヘッダー ファイル\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="main.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="color.hpp">
+      <Filter>ヘッダー ファイル\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="keyboard.hpp">
+      <Filter>ヘッダー ファイル\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="objects.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="entities.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="enum.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="VectorEngine.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="sounds\Boost.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="sounds\BreakAsteroid.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="sounds\Death.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="sounds\GameOver.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="sounds\GetReady.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="sounds\LevelClear.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="sounds\NewLife.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="sounds\Shoot.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="sounds\Thrust.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+  </ItemGroup>
+</Project>

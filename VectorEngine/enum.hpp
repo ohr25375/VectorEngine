@@ -1,0 +1,10 @@
+#pragma once
+
+enum GAME_STATE
+{
+	GAME_TITLE,
+	GAME_LOAD,
+	GAME_GAME,
+	GAME_OVER,
+	GAME_CLEAR,
+};
