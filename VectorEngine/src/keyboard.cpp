@@ -2,6 +2,8 @@
 
 KEYPRESS::KEYPRESS() : down(false), up(false), isHold(false), lastState(false), state(false) {}
 
+std::map<int, KEYPRESS> keys;
+
 void KEYPRESS::update()
 {
 	if (state != lastState) {
@@ -48,7 +50,7 @@ void MOUSE::update()
 	right.update();
 }
 
-void updateKeys(std::map<int, KEYPRESS>& keys)
+void updateKeys()
 {
 	std::vector<char> keyAll(256, 0);
 	GetHitKeyStateAll(keyAll.data());
@@ -58,10 +60,16 @@ void updateKeys(std::map<int, KEYPRESS>& keys)
 	}
 }
 
-bool isAnyKeyDown(std::map<int, KEYPRESS>& keys)
+bool isAnyKeyDown()
 {
 	for (auto [_, key] : keys) {
 		if (key.down) return true;
 	}
 	return false;
+}
+
+KEYPRESS checkKey(int keycode)
+{
+	assert("Invalid Keycode", (keys.contains(keycode)));
+	return keys[keycode];
 }

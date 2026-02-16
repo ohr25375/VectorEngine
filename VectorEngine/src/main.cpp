@@ -1,11 +1,6 @@
 #include "main.hpp"
 
-
-// VECTOR
-// int x;
-// int y;
-// int z:
-
+ASTEROID titleAsteroid;
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hprevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -25,9 +20,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hprevInstance, _
 
 	int timer = 0;
 
-	while (true)
+	while (ProcessMessage() == 0)
 	{
-		updateKeys(keys);
+		updateKeys();
 		switch (gameState)
 		{
 		case GAME_TITLE:
@@ -48,7 +43,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hprevInstance, _
 		}
 		DxLibAddon::doDelay();
 
-		if (keys[KEY_INPUT_ESCAPE].down) break;
+		if (checkKey(KEY_INPUT_ESCAPE).down) break;
 	}
 
 	for (auto mem : soundMem)
@@ -64,6 +59,11 @@ void titleScreen(int& screenDelay, GAME_STATE& gameState, int& timer)
 {
 	ClearDrawScreen();
 
+
+	titleAsteroid.obj.rotation -= DEG2RAD / 4;
+	drawAsteroid(titleAsteroid);
+
+
 	std::string titleText = "ASTEROIDS";
 	DxLibAddon::DrawString(WINDOW_CENTER - VECTOR2i(0, 40), titleText, WHITE, 90, true);
 	if (timer % 120 < 60)
@@ -71,6 +71,8 @@ void titleScreen(int& screenDelay, GAME_STATE& gameState, int& timer)
 		std::string pressText = "press any key to start";
 		DxLibAddon::DrawString(WINDOW_CENTER + VECTOR2i(0, 100), pressText, WHITE, 30, true);
 	}
+
+
 	std::string upDownText = "W(ª)/S(«)    Move Forwards/Backwards";
 	DxLibAddon::DrawString(WINDOW_CENTER + VECTOR2i(0, 150), upDownText, WHITE, 20, true);
 	std::string leftRightText = "A(©)/D(¨)    Spin Left/Right        ";
@@ -79,7 +81,7 @@ void titleScreen(int& screenDelay, GAME_STATE& gameState, int& timer)
 	DxLibAddon::DrawString(WINDOW_CENTER + VECTOR2i(0, 190), shootText, WHITE, 20, true);
 	std::string boostText = "Shift(X)       Boost                  ";
 	DxLibAddon::DrawString(WINDOW_CENTER + VECTOR2i(0, 210), boostText, WHITE, 20, true);
-	if (isAnyKeyDown(keys))
+	if (isAnyKeyDown())
 	{
 		screenDelay = 4.5 * FPS;
 		PlaySoundMem(sfx_getReady, DX_PLAYTYPE_BACK);
@@ -104,7 +106,7 @@ void loadScreen(int& screenDelay, GAME_STATE& gameState)
 		lives = INITIAL_LIVES;
 		score = 0;
 		level = 0;
-		entities.clear();
+		asteroids.clear();
 		spawnAsteroids();
 		return;
 	}
@@ -139,7 +141,7 @@ void clearScreen(int& screenDelay, GAME_STATE& gameState)
 	if (screenDelay <= 0)
 	{
 		gameState = GAME_GAME;
-		entities.clear();
+		asteroids.clear();
 		spawnAsteroids();
 		return;
 	}
@@ -183,12 +185,12 @@ bool game()
 	int lifeScore = score % LIVES_INCREMENT;
 
 
-	while (true)
+	while (ProcessMessage() == 0)
 	{
 		// Refresh
 		ClearDrawScreen();
 		time++;
-		updateKeys(keys);
+		updateKeys();
 		if (isPlayerAlive)
 		{
 			controlPlayer(isBulletVisible, time);
@@ -209,18 +211,18 @@ bool game()
 			isBulletVisible = drawBullet();
 		}
 
-		for (int i = entities.size() - 1; i >= 0; i--)
+		for (int i = asteroids.size() - 1; i >= 0; i--)
 		{
-			entities[i].obj.move();
-			entities[i].obj.wrapPosition(VECTOR2f(-(entities[i].obj.getRadius())), WINDOW + VECTOR2i(entities[i].obj.getRadius()));
-			if (entities[i].obj.isColliding(bullet) && isBulletVisible)
+			asteroids[i].obj.move();
+			asteroids[i].obj.wrapPosition(VECTOR2f(-(asteroids[i].obj.getRadius())), WINDOW + VECTOR2i(asteroids[i].obj.getRadius()));
+			if (asteroids[i].obj.isColliding(bullet) && isBulletVisible)
 			{
-				int particleCount = max((entities[i].size + 1), 1) * 3 * max(entities[i].size / 2, 1);
-				spawnParticles(pointParticles, entities[i].obj.pos, particleCount, PARTICLE_INITIAL_SPEED, FPS * PARTICLE_TIME);
+				int particleCount = max((asteroids[i].size + 1), 1) * 3 * max(asteroids[i].size / 2, 1);
+				spawnParticles(pointParticles, asteroids[i].obj.pos, particleCount, PARTICLE_INITIAL_SPEED, FPS * PARTICLE_TIME);
 				PlaySoundMem(sfx_breakAsteroid, DX_PLAYTYPE_BACK);
 
 				// ADD SCORE
-				int points = ASTEROID_SCORES[entities[i].size];
+				int points = ASTEROID_SCORES[asteroids[i].size];
 				score += points;
 				lifeScore += points;
 
@@ -234,23 +236,23 @@ bool game()
 
 
 				isBulletVisible = false;
-				if (entities[i].size == 0)
+				if (asteroids[i].size == 0)
 				{
-					entities.erase(entities.begin() + i);
+					asteroids.erase(asteroids.begin() + i);
 					continue;
 				}
 
 				// SPLIT ASTEROID
-				entities[i].size -= 1;
-				entities[i].obj.rotation = fmod(mt() / 1000.0, 360);
-				entities[i].obj.vel = VECTOR2f(0, -1).rotate(bullet.rotation + M_PI / 4 + fmod(mt() / 1000.0, M_PI / 8)) * ASTEROID_SPEED[entities[i].size];
-				entities[i].obj.graphSize = ASTEROID_SIZE[entities[i].size];
-				entities.push_back(ASTEROID(entities[i]));
-				entities[i].obj.vel = entities[i].obj.vel.rotate(-M_PI / 4 + fmod(mt() / 1000.0, M_PI / 8));
-				entities[i].obj.rotation = fmod(mt() / 1000.0, 360);
+				asteroids[i].size -= 1;
+				asteroids[i].obj.rotation = fmod(mt() / 1000.0, 2 * M_PI);
+				asteroids[i].obj.vel = VECTOR2f(0, -1).rotate(bullet.rotation + M_PI / 4 + fmod(mt() / 1000.0, M_PI / 8)) * ASTEROID_SPEED[asteroids[i].size];
+				asteroids[i].obj.graphSize = ASTEROID_SIZE[asteroids[i].size];
+				asteroids.push_back(ASTEROID(asteroids[i]));
+				asteroids[i].obj.vel = asteroids[i].obj.vel.rotate(-M_PI / 4 + fmod(mt() / 1000.0, M_PI / 8));
+				asteroids[i].obj.rotation = fmod(mt() / 1000.0, 2 * M_PI);
 
 			}
-			else if (entities[i].obj.isColliding(player) && isPlayerAlive)
+			else if (asteroids[i].obj.isColliding(player) && isPlayerAlive)
 			{
 				// KILL PLAYER
 				isPlayerAlive = false;
@@ -260,7 +262,7 @@ bool game()
 				StopSoundMem(sfx_thrust);
 				lives--;
 			}
-			entities[i].obj.draw();
+			drawAsteroid(asteroids[i]);
 		}
 
 		drawParticles(pointParticles, bullet);
@@ -269,14 +271,24 @@ bool game()
 		drawLives();
 		drawScore();
 
-		if (entities.empty()) return true;
+		if (asteroids.empty()) return true;
 		ScreenFlip();
 
 		DxLibAddon::doDelay();
-		if (ProcessMessage() == -1) return false;
-		if (keys[KEY_INPUT_ESCAPE].down) return false;
+		if (checkKey(KEY_INPUT_ESCAPE).down) return false;
 	}
 	return false;
+}
+
+void drawAsteroid(const ASTEROID& asteroid)
+{
+	static OBJECT asteroidDoodadObject(asteroidDoodad);
+	asteroid.obj.draw();
+	asteroidDoodadObject.graphSize = asteroid.obj.graphSize;
+	asteroidDoodadObject.rotation = asteroid.obj.rotation;
+	asteroidDoodadObject.pos = asteroid.obj.pos;
+	asteroidDoodadObject.color = asteroid.obj.color;
+	asteroidDoodadObject.draw();
 }
 
 void resetParticles(std::vector<POINT_PARTICLE>& particles)
@@ -340,14 +352,14 @@ void spawnAsteroids()
 		for (int j = 0; j < ASTEROID_SPAWN_COUNT[ast.size]; j++)
 		{
 			resetAsteroidPosition(ast);
-			entities.push_back(ast);
+			asteroids.push_back(ast);
 		}
 	}
 }
 
 void resetAsteroidPositions()
 {
-	for (auto& ast : entities)
+	for (auto& ast : asteroids)
 	{
 		resetAsteroidPosition(ast);
 	}
@@ -408,7 +420,14 @@ void Initialize()
 
 	pointParticles = std::vector<POINT_PARTICLE>(100, {.isActive = false});
 	deathParticles = std::vector<POINT_PARTICLE>(PLAYER_DEATH_PARTICLE_COUNT, {.isActive = false});
-	entities = std::vector<ASTEROID>(0);
+	asteroids = std::vector<ASTEROID>(0);
+
+	setGlareValue(GLARE);
+
+	titleAsteroid = ASTEROID(largeAsteroid);
+	titleAsteroid.size = ASTEROID_SIZE.size() - 1;
+	resetAsteroidPosition(titleAsteroid);
+	titleAsteroid.obj.pos = WINDOW_CENTER;
 }
 
 void drawParticles(std::vector<POINT_PARTICLE>& particles, OBJECT particle, bool canShrink)
@@ -447,16 +466,16 @@ void controlPlayer(bool& isBulletVisible, int time)
 	float playerAcc = ARROW_BASE_SPEED;
 	bool isOverSpeed = player.vel.magnitude() > ARROW_MAX_VEL;
 	// Inputs
-	if (keys[KEY_INPUT_A].isHold || keys[KEY_INPUT_LEFT].isHold)
+	if (checkKey(KEY_INPUT_A).isHold || checkKey(KEY_INPUT_LEFT).isHold)
 	{
 		player.rotation += ROTATION_SPEED * DEG2RAD;
 	}
-	if (keys[KEY_INPUT_D].isHold || keys[KEY_INPUT_RIGHT].isHold)
+	if (checkKey(KEY_INPUT_D).isHold || checkKey(KEY_INPUT_RIGHT).isHold)
 	{
 		player.rotation -= ROTATION_SPEED * DEG2RAD;
 	}
 
-	if ((keys[KEY_INPUT_LSHIFT].down || keys[KEY_INPUT_X].down) && !isBoosted)
+	if ((checkKey(KEY_INPUT_LSHIFT).down || checkKey(KEY_INPUT_X).down) && !isBoosted)
 	{
 		playerAcc = ARROW_BOOST_SPEED;
 		isBoosted = true;
@@ -465,7 +484,7 @@ void controlPlayer(bool& isBulletVisible, int time)
 		PlaySoundMem(sfx_boost, DX_PLAYTYPE_BACK);
 	}
 
-	if ((keys[KEY_INPUT_SPACE].down || keys[KEY_INPUT_Z].down) && !isBulletVisible)
+	if ((checkKey(KEY_INPUT_SPACE).down || checkKey(KEY_INPUT_Z).down) && !isBulletVisible)
 	{
 		isBulletVisible = true;
 		bullet.pos = player.pos - (VECTOR2f(0, 4 / 3.0).scale(player.graphSize)).rotate(player.rotation);
@@ -474,7 +493,7 @@ void controlPlayer(bool& isBulletVisible, int time)
 		PlaySoundMem(sfx_shoot, DX_PLAYTYPE_BACK);
 	}
 
-	if (keys[KEY_INPUT_W].isHold || keys[KEY_INPUT_UP].isHold)
+	if (checkKey(KEY_INPUT_W).isHold || checkKey(KEY_INPUT_UP).isHold)
 	{
 		if (!isOverSpeed)
 		{
@@ -482,7 +501,7 @@ void controlPlayer(bool& isBulletVisible, int time)
 		}
 		accelerating = true;
 	}
-	else if (keys[KEY_INPUT_S].isHold || keys[KEY_INPUT_DOWN].isHold)
+	else if (checkKey(KEY_INPUT_S).isHold || checkKey(KEY_INPUT_DOWN).isHold)
 	{
 		if (!isOverSpeed)
 		{

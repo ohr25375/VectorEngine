@@ -12,3 +12,13 @@ COLOR::COLOR(const uint32_t rgb, const uint8_t a)
 	this->a = a;
 	this->rgb = (r << 16) + (g << 8) + b;
 }
+
+COLOR COLOR::darken(const float value) const
+{
+	COLOR darkened = *this;
+	darkened.r *= value;
+	darkened.g *= value;
+	darkened.b *= value;
+	darkened.rgb = (darkened.r << 16) + (darkened.g << 8) + darkened.b;
+	return darkened;
+}

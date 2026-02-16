@@ -7,14 +7,17 @@
 #include "color.hpp"
 #include "DxLibAddon.hpp"
 
+extern void setBrightness(int value);
+void setGlareValue(int value);
+
 class VECTOR_GRAPH
 {
 public:
-	std::vector<std::pair<int, int>> edges;
 	std::vector<VECTOR2f> vertices;
+	std::vector<std::pair<std::pair<int, int>, float>> edges;
 	float radius;
 
-	VECTOR_GRAPH(std::vector<VECTOR2f> vertices, std::vector<std::pair<int, int>> edges, float radius);
+	VECTOR_GRAPH(std::vector<VECTOR2f> vertices, std::vector<std::pair<std::pair<int, int>, float>> edges, float radius);
 	VECTOR_GRAPH();
 
 private:
@@ -30,7 +33,7 @@ public:
 	COLOR color;
 
 	OBJECT(VECTOR_GRAPH vectorGraph = VECTOR_GRAPH(), COLOR color = COLOR(0xffffff));
-	void draw(bool flipX = false, bool flipY = false);
+	void draw(bool flipX = false, bool flipY = false) const;
 	void move();
 	void wrapPosition(VECTOR2f topLeft, VECTOR2f bottomRight);
 	float getRadius() const;
@@ -39,6 +42,8 @@ public:
 
 private:
 	VECTOR_GRAPH vectorGraph;
+	bool collisionByRadius(const OBJECT& other) const;
+	bool collisionByGraph(const OBJECT& other) const;
 };
 
 class ASTEROID

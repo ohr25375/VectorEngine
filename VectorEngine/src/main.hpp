@@ -34,10 +34,11 @@ const std::string GAME_WINDOW_NAME = "Asteroids";
 const int COLOR_DEPTH = 32;
 const COLOR BACKGROUND_COLOR(0x000000, 0xff);
 
+const int BRIGHTNESS = 128;
+const int GLARE = 12;
+
 std::mt19937 mt;
 std::random_device rd;
-
-std::map<int, KEYPRESS> keys;
 
 const int ROTATION_SPEED = 3;
 const float FRICTION = 0.99;
@@ -74,7 +75,7 @@ int sfx_levelClear;
 std::vector<int> soundMem;
 
 
-std::vector<ASTEROID> entities;
+std::vector<ASTEROID> asteroids;
 std::vector<POINT_PARTICLE> pointParticles;
 std::vector<POINT_PARTICLE> deathParticles;
 
@@ -96,6 +97,7 @@ const int LIVES_INCREMENT = 10000;
 uint64_t skippedFrames = 0;
 
 bool game();
+void drawAsteroid(const ASTEROID& asteroid);
 void titleScreen(int& screenDelay, GAME_STATE& gameState, int& timer);
 void loadScreen(int& screenDelay, GAME_STATE& gameState);
 void gameScreen(int& screnDelay, GAME_STATE& gameState);

@@ -11,6 +11,7 @@ public:
 
 	COLOR(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 0xff);
 	COLOR(uint32_t rgb = 0xffffff, uint8_t a = 0xff);
+	COLOR darken(float value) const;
 };
 
 const COLOR WHITE(0xffffff);

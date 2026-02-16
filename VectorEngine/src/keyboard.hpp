@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <map>
 #include <vector>
+#include <cassert>
 
 class KEYPRESS
 {
@@ -32,6 +33,8 @@ private:
 	int xd, yd;
 };
 
-void updateKeys(std::map<int, KEYPRESS>& keys);
+void updateKeys();
 
-bool isAnyKeyDown(std::map<int, KEYPRESS>& keys);
+bool isAnyKeyDown();
+
+KEYPRESS checkKey(int keyCode);
